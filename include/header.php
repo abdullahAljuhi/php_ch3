@@ -1,4 +1,3 @@
-
 <header id="header">
     <nav class="navbar navbar-expand-lg ">
         <a href="index.php" class="navbar-brand">
@@ -32,6 +31,20 @@
                         }
 
                         ?>
+                    </h5>
+                </a>
+            </div>
+            <div class="navbar-nav">
+                <a href="logout.php" class="nav-item nav-link active">
+                    <h5 class="px-5 cart">
+                        <i class="fas fa-shopping-cart"></i> logout
+                    </h5>
+                </a>
+            </div>
+            <div class="navbar-nav">
+                <a href="/cart/userWallet.php" class="nav-item nav-link active">
+                    <h5 class="px-5 cart">
+                        <i class="fas fa-wallet"></i>
                     </h5>
                 </a>
             </div>

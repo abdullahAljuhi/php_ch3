@@ -3,43 +3,33 @@
 
 class connectedDb
 {
-        public $servername;
-        public $username;
-        public $password;
-        public $dbname;
-        public $tablename;
-        public $con;
+        public $servername='localhost';
+        public $username='root';
+        public $password='';
+        public $dbname='Productdb';
+        public static $con;
 
 
         // class constructor
-    public function __construct(
-        $dbname = "Newdb",
-        $tablename = "Productdb",
-        $servername = "localhost",
-        $username = "root",
-        $password = ""
-    )
+    public function __construct()
     {
-      $this->dbname = $dbname;
-      $this->tablename = $tablename;
-      $this->servername = $servername;
-      $this->username = $username;
-      $this->password = $password;
-
       // create connection
-        $this->con = mysqli_connect($servername, $username, $password, $dbname);
+        self::$con = mysqli_connect($this->servername,$this->username, 
+        $this->password, $this->dbname);
 
         // Check connection
-        if (!$this->con){
+        if (!self::$con){
             die("Connection failed : " . mysqli_connect_error());
         }
     }
-
+public function concted(){
+    return self::$con;
+}
     // get product from the database
-    public function getData(){
-        $sql = "SELECT * FROM $this->tablename";
+    public function getAll($tablename){
+        $sql = "SELECT * FROM $tablename";
 
-        $result = mysqli_query($this->con, $sql);
+        $result = mysqli_query(self::$con, $sql);
 
         if(mysqli_num_rows($result) > 0){
             return $result;

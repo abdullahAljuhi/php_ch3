@@ -1,13 +1,20 @@
 <?php
 
 session_start();
+if (!isset($_SESSION['user'])) {
+    header('Location: login.php');
+    exit;
+}else if ($_SESSION['type']==1) {
+    header('Location: dashbord.php');
+    exit;
+}
 
 require_once ('./db/connected.php');
 
 // session_unset();
 
 // create instance of Createdb class
-$database = new connectedDb("Productdb", "Producttb");
+$db = new connectedDb();
 
 if (isset($_POST['add'])){
     $count=0;
@@ -36,34 +43,20 @@ if (isset($_POST['add'])){
 
 ?>
 
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Shopping Cart</title>
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css" />
-
-    <!-- Bootstrap CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-    <link rel="stylesheet" href="./public/css/style.css">
-</head>
-<body>
-
+<?php require_once ('./include/head.php'); ?>
 
 <?php require_once ('./include/header.php'); ?>
 
 <div class="container">
         <div class="row text-center py-5">
             <?php
-                $result = $database->getData();
+                $result = $db->getAll("Producttb");
+
                 if(isset($result))
+
                 while ($row = mysqli_fetch_assoc($result)){?>
+
                     <div class="col-md-3 col-sm-6 my-3 my-md-0">
                     <form action="index.php" method="post">
                         <div class="card shadow">
@@ -99,9 +92,7 @@ if (isset($_POST['add'])){
                         </div>
                     </form>
                 </div>
-                <?php
-                    // component($row['product_name'], $row['product_price'], $row['product_image'], $row['id'],($_SESSION['cart'][$row['id']])??'0');
-                
+                <?php                
                 }
             ?>
         </div>

@@ -1,16 +1,19 @@
 <?php
 
 session_start();
-
+if (!isset($_SESSION['user'])) {
+    header('Location: login.php');
+    exit;
+}
 require_once ("./db/connected.php");
 
-$db = new connectedDb("Productdb", "Producttb");
+$db = new connectedDb();
 
 if (isset($_POST['remove'])){
   if ($_GET['action'] == 'remove'){
       foreach ($_SESSION['cart'] as $key => $value){
           if( $key == $_GET['id']){
-              echo $key . $value;
+            $_SESSION['cart']['count']-=$_SESSION['cart'][$key];
               unset($_SESSION['cart'][$key]);
           }
       }
@@ -19,11 +22,15 @@ if (isset($_POST['remove'])){
 if(isset($_GET['actionmin'])){
     if($_SESSION['cart'][$_GET['id']]>1){
         $_SESSION['cart'][$_GET['id']]--;
+        $_SESSION['cart']['count']-=1;
+
     }
  
 }
 if(isset($_GET['actionadd'])){
-        $_SESSION['cart'][$_GET['id']]++;   
+        $_SESSION['cart'][$_GET['id']]++; 
+        $_SESSION['cart']['count']+=1;
+  
 }
 ?>
 
@@ -56,7 +63,6 @@ if(isset($_GET['actionadd'])){
             <div class="shopping-cart">
                 <h6>My Cart</h6>
                 <hr>
-
                 <?php
                   if(isset($_GET['q']) && isset($_GET['id'])){
                     $_SESSION['cart'][$_GET['id']]=$_GET['q'];
@@ -65,7 +71,7 @@ if(isset($_GET['actionadd'])){
                     if (isset($_SESSION['cart'])){
                         $product_id = array_keys($_SESSION['cart']);
 
-                        $result = $db->getData();
+                        $result = $db->getAll("Producttb");
                         while ($row = mysqli_fetch_assoc($result)){
                             foreach ($product_id as $id){
                                 if ($row['id'] == $id){?>
@@ -75,11 +81,9 @@ if(isset($_GET['actionadd'])){
                                             <div class="col-md-3 pl-0">
                                                 <img src="./upload/<?=$row['product_image']?>" alt="Image1" class="img-fluid">
                                             </div>
-                                            <div class="col-md-6 row">
+                                            <div class="col-md-6">
                                                 <h5 class="pt-2"><?=$row['product_name']?></h5>
-                                                <small class="text-secondary">Seller: dailytuition</small>
-                                                <h5 class="pt-2">$ <?=$row['product_price']?></h5>
-                                                <button type="submit"  style="height: fit-content;" class="btn btn-warning">Save for Later</button>
+                                                <h5 class="pt-2"> $ <?=$row['product_price']?> </h5>
                                                 <form action="cart.php?action=remove&id=<?=$row['id']?>" method="post" class="cart-items">
                                                 <button type="submit"  style="height: fit-content;" class="btn btn-danger mx-2" name="remove">Remove</button>
                                                 </form>
@@ -139,6 +143,11 @@ if(isset($_GET['actionadd'])){
                         <h6>$<?php
                             echo $total;
                             ?></h6>
+                        <form action="buy.php" method="post">
+                        <input value="<?= $total?>" name="add_amount" type="hidden">
+                        <input value="<?= $_SESSION['user_id']?>" name='user_id' type="hidden">
+                        <button type="submit" class="btn btn-warning my-3" name="buy"> buy <i class="fas fa-shopping-cart"></i></button>
+                        </form>
                     </div>
                 </div>
             </div>

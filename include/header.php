@@ -37,7 +37,7 @@
             <div class="navbar-nav">
                 <a href="logout.php" class="nav-item nav-link active">
                     <h5 class="px-5 cart">
-                        <i class="fas fa-shopping-cart"></i> logout
+                     logout
                     </h5>
                 </a>
             </div>
